@@ -8,7 +8,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
@@ -32,8 +31,6 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
     private lateinit var mainViewModel: MainViewModel
     private lateinit var newsAdapter: ArticleAdapter
     private lateinit var categoryAdapter: CategoryAdapter
-//    private var search : Boolean = false
-
     private var searchText :String = ""
     private var cats :String = ""
     private var shortBy : String? = "popularity"
@@ -165,7 +162,6 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
                     mainViewModel.getNews(url)
                 }
                 "top" -> {
-                    Toast.makeText(this, "top", Toast.LENGTH_SHORT).show()
                     mainViewModel.getNews("${getString(R.string.baseUrl)}top-headlines?country=$shortByCountry&apiKey=${getString(R.string.apiKey)}")
                 }
             }
