@@ -21,7 +21,7 @@ class MainViewModel(private val newsRepository: NewsRepository) : ViewModel(){
 
 
     private  val shortLiveDatas= MutableLiveData<Array<String>>()
-    private val short = arrayOf("popularity","publishedAt","relevancy")
+    private val short = arrayOf("popularity","recently","relevancy")
     val shortByLiveData : LiveData<Array<String>>
         get() = shortLiveDatas
 

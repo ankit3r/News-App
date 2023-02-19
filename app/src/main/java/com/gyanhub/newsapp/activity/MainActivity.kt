@@ -126,6 +126,8 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             @SuppressLint("NotifyDataSetChanged")
             override fun onQueryTextSubmit(query: String?): Boolean {
+                categoryAdapter.selectedPosition = RecyclerView.NO_POSITION
+                categoryAdapter.notifyDataSetChanged()
                 searchText = query!!
                 hideKeyboard(searchView)
                 type = "search"
@@ -233,7 +235,12 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
        view.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
               if(short==1){
-                  shortBy  = list[position]
+                  if(list[position]=="recently"){
+                      shortBy  = "publishedAt"
+                  }else{
+                      shortBy  = list[position]
+                  }
+
               }else{
                   shortByCountry  = list[position]
               }
