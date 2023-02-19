@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="pading_news_card">10dp</dimen>
+    <dimen name="text_size_big">18sp</dimen>
+    <dimen name="text_size_mid">16sp</dimen>
+    <dimen name="news_image_size">250dp</dimen>
+    <dimen name="card_padding">5dp</dimen>
+    <dimen name="card_margin">5dp</dimen>
+    <dimen name="card_corner_radius">5dp</dimen>
+    <dimen name="card_elevation_max">10dp</dimen>
+</resources>
