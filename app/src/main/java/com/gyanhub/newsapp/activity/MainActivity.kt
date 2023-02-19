@@ -79,10 +79,10 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
 
         // THIS IS USE TO FILTER NEWS
         mainBinding.txtFilter.setOnClickListener {
+            getNews(type,cats,searchText)
           mainBinding.txtTool.visibility = View.VISIBLE
           mainBinding.filterLayout.visibility = View.GONE
-            getNews(type,cats,searchText)
-         }
+        }
 
         // THIS IS USE TO SHOW FILTER LAYOUT
         mainBinding.txtTool.setOnClickListener {
