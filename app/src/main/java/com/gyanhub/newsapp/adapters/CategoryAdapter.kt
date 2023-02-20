@@ -9,13 +9,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.gyanhub.newsapp.R
 
-class CategoryAdapter (val catList:Array<String>,val click:SelectCategory):
+class CategoryAdapter (private val catList:Array<String>, private val click:SelectCategory):
 RecyclerView.Adapter<CategoryAdapter.CatViewHolder>(){
 
      var selectedPosition = RecyclerView.NO_POSITION
 
     inner class CatViewHolder(view:View):RecyclerView.ViewHolder(view){
-        val catTxt = view.findViewById<TextView>(R.id.txtCategory)
+        val catTxt: TextView = view.findViewById(R.id.txtCategory)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatViewHolder {
@@ -27,8 +27,6 @@ RecyclerView.Adapter<CategoryAdapter.CatViewHolder>(){
     override fun onBindViewHolder(holder: CatViewHolder, @SuppressLint("RecyclerView") position: Int) {
         val item = catList[position]
         holder.catTxt.text = item
-
-
         if (selectedPosition == position) {
             holder.itemView.setBackgroundColor(Color.GRAY)
         } else {

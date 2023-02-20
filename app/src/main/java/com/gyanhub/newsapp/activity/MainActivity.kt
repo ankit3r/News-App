@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
     private lateinit var categoryAdapter: CategoryAdapter
     private var searchText :String = ""
     private var cats :String = ""
+    private var toolVisibility = false
     private var shortBy : String? = "popularity"
     private var shortByCountry : String? = "in"
     private var type : String = "top"
@@ -53,6 +54,33 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
 
         // THIS METHODE USE TO GET NEWS
         getNews(type,cats,searchText)
+
+        // THIS IS USE FOR SCROLL CONTROL
+        mainBinding.rcViewArt.addOnScrollListener(object :RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > -0) {
+                    mainBinding.rcCat.visibility = View.GONE
+                    mainBinding.txtTool.visibility = View.GONE
+                }
+                else {
+                    mainBinding.rcCat.visibility = View.VISIBLE
+                   if(toolVisibility) mainBinding.txtTool.visibility = View.VISIBLE
+                   else mainBinding.txtTool.visibility = View.GONE
+                }
+            }
+        })
+
+        // THIS CLICK ALLOW TO USER FILTER TOP HEADLINE
+        mainBinding.cardTxtType.setOnClickListener {
+            if(mainBinding.txtTool.visibility == View.VISIBLE){
+                mainBinding.txtTool.visibility = View.GONE
+                toolVisibility = false
+            }else{
+                mainBinding.txtTool.visibility = View.VISIBLE
+                toolVisibility = true
+            }
+        }
 
         // GATING CATEGORY LIST DATA FROM VIEW MODEL CLASS
         mainViewModel.categoryLiveData.observe(this){
@@ -81,12 +109,14 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
         mainBinding.txtFilter.setOnClickListener {
             getNews(type,cats,searchText)
           mainBinding.txtTool.visibility = View.VISIBLE
+            toolVisibility = true
           mainBinding.filterLayout.visibility = View.GONE
         }
 
         // THIS IS USE TO SHOW FILTER LAYOUT
         mainBinding.txtTool.setOnClickListener {
             it.visibility = View.GONE
+            toolVisibility = false
             mainBinding.filterLayout.visibility = View.VISIBLE
         }
 
@@ -135,7 +165,8 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
                 newsAdapter.notifyDataSetChanged()
                 if(mainBinding.filterLayout.visibility != View.VISIBLE){
                     mainBinding.txtTool.visibility = View.VISIBLE
-                }
+                    toolVisibility = true
+                }else toolVisibility = false
                 return true
             }
 
@@ -156,14 +187,17 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
         if(isInternetAvailable(this)){
             when(type){
                 "category" -> {
+                    mainBinding.txtType.text = cats
                     val url = "${getString(R.string.baseUrl)}top-headlines?country=$shortByCountry&category=$cats&apiKey=${getString(R.string.apiKey)}"
                     mainViewModel.getNews(url)
                 }
                 "search" -> {
+                    mainBinding.txtType.text = searchText
                     val url = "${getString(R.string.baseUrl)}everything?q=$searchText&sortBy=$shortBy?country=$shortByCountry&apiKey=${getString(R.string.apiKey)}"
                     mainViewModel.getNews(url)
                 }
                 "top" -> {
+                    mainBinding.txtType.text = getString(R.string.headline)
                     mainViewModel.getNews("${getString(R.string.baseUrl)}top-headlines?country=$shortByCountry&apiKey=${getString(R.string.apiKey)}")
                 }
             }
@@ -200,6 +234,7 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
             categoryAdapter.notifyDataSetChanged()
             mainBinding.txtTool.visibility = View.GONE
             type = "top"
+            toolVisibility = false
             getNews(type,cats,searchText)
         }else{
             super.onBackPressed()
@@ -215,7 +250,8 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
        }
         if(mainBinding.filterLayout.visibility != View.VISIBLE){
             mainBinding.txtTool.visibility = View.VISIBLE
-        }
+            toolVisibility = true
+        }else toolVisibility = false
 
     }
 

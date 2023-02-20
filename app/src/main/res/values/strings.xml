@@ -4,6 +4,8 @@
     <string name="apiKey">8a87e466f7804b00868fb809dadcb248</string>
     <string name="baseUrl">https://newsapi.org/v2/</string>
     <string name="networkError">Network is not Connected</string>
-    <string name="tool">Tool</string>
+    <string name="tool">Tools</string>
     <string name="read_more">Read More</string>
+    <string name="headline">Top Headline</string>
+    <string name="filters">Filters</string>
 </resources>
