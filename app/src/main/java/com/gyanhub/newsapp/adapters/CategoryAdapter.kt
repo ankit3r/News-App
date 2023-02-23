@@ -9,10 +9,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.gyanhub.newsapp.R
 
-class CategoryAdapter (private val catList:Array<String>, private val click:SelectCategory):
+class CategoryAdapter (private val catList:Array<String>, private val click:SelectCategory,private var _selectedPosition : Int = RecyclerView.NO_POSITION):
 RecyclerView.Adapter<CategoryAdapter.CatViewHolder>(){
 
-     var selectedPosition = RecyclerView.NO_POSITION
+     var selectedPosition = _selectedPosition
+
 
     inner class CatViewHolder(view:View):RecyclerView.ViewHolder(view){
         val catTxt: TextView = view.findViewById(R.id.txtCategory)
@@ -35,7 +36,7 @@ RecyclerView.Adapter<CategoryAdapter.CatViewHolder>(){
 
         // handle item click events
         holder.itemView.setOnClickListener {
-            click.selectCategoy(item)
+            click.selectCategoy(item,position)
             if (selectedPosition != position) {
                 val prevSelectedPosition = selectedPosition
                 selectedPosition = position
@@ -52,5 +53,5 @@ RecyclerView.Adapter<CategoryAdapter.CatViewHolder>(){
 }
 
 interface SelectCategory{
-    fun selectCategoy(text: String)
+    fun selectCategoy(text: String,position: Int)
 }

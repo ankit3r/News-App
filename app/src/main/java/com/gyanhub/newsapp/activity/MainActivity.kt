@@ -31,13 +31,8 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
     private lateinit var mainViewModel: MainViewModel
     private lateinit var newsAdapter: ArticleAdapter
     private lateinit var categoryAdapter: CategoryAdapter
-    private var searchText :String = ""
-    private var cats :String = ""
-    private var toolVisibility = false
-    private var shortBy : String? = "popularity"
-    private var shortByCountry : String? = "in"
-    private var type : String = "top"
-
+    private lateinit var shortBy : String
+    private lateinit var shortByCountry : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +48,7 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
         mainViewModel = ViewModelProvider(this, MainViewFactory(repository))[MainViewModel::class.java]
 
         // THIS METHODE USE TO GET NEWS
-        getNews(type,cats,searchText)
+        getNews(mainViewModel.type,mainViewModel.cats,mainViewModel.searchText)
 
         // THIS IS USE FOR SCROLL CONTROL
         mainBinding.rcViewArt.addOnScrollListener(object :RecyclerView.OnScrollListener(){
@@ -65,7 +60,7 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
                 }
                 else {
                     mainBinding.rcCat.visibility = View.VISIBLE
-                   if(toolVisibility) mainBinding.txtTool.visibility = View.VISIBLE
+                   if(mainViewModel.toolVisibility) mainBinding.txtTool.visibility = View.VISIBLE
                    else mainBinding.txtTool.visibility = View.GONE
                 }
             }
@@ -75,16 +70,16 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
         mainBinding.cardTxtType.setOnClickListener {
             if(mainBinding.txtTool.visibility == View.VISIBLE){
                 mainBinding.txtTool.visibility = View.GONE
-                toolVisibility = false
+                mainViewModel.toolVisibility = false
             }else{
                 mainBinding.txtTool.visibility = View.VISIBLE
-                toolVisibility = true
+                mainViewModel.toolVisibility = true
             }
         }
 
         // GATING CATEGORY LIST DATA FROM VIEW MODEL CLASS
         mainViewModel.categoryLiveData.observe(this){
-            categoryAdapter = CategoryAdapter(it,this)
+            categoryAdapter = CategoryAdapter(it,this,mainViewModel._selectedPosition)
             mainBinding.rcCat.adapter = categoryAdapter
         }
 
@@ -100,23 +95,25 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
 
         // THIS IS USE TO REFRESH NEWS
         mainBinding.swipeRefreshLayout.setOnRefreshListener {
+
             mainBinding.swipeRefreshLayout.isRefreshing = true
-            getNews(type,cats,searchText)
+            getNews(mainViewModel.type,mainViewModel.cats,mainViewModel.searchText)
             mainBinding.swipeRefreshLayout.isRefreshing = false
         }
 
         // THIS IS USE TO FILTER NEWS
         mainBinding.txtFilter.setOnClickListener {
-            getNews(type,cats,searchText)
+
+            getNews(mainViewModel.type,mainViewModel.cats,mainViewModel.searchText)
           mainBinding.txtTool.visibility = View.VISIBLE
-            toolVisibility = true
+            mainViewModel.toolVisibility = true
           mainBinding.filterLayout.visibility = View.GONE
         }
 
         // THIS IS USE TO SHOW FILTER LAYOUT
         mainBinding.txtTool.setOnClickListener {
             it.visibility = View.GONE
-            toolVisibility = false
+            mainViewModel.toolVisibility = false
             mainBinding.filterLayout.visibility = View.VISIBLE
         }
 
@@ -126,7 +123,7 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
                 is NetworkResult.Success -> {
                     mainBinding.rcViewArt.visibility=View.VISIBLE
                     progress()
-                    newsAdapter = ArticleAdapter(it.data!!.articles,this,this)
+                    newsAdapter = ArticleAdapter(it.data!!.articles,this,this,)
                     mainBinding.rcViewArt.adapter = newsAdapter
                     newsAdapter.notifyDataSetChanged()
                 }
@@ -142,7 +139,7 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
 
         // ERROR HANDLING RELOAD
         mainBinding.btnRetry.setOnClickListener {
-            getNews(type,cats,searchText)
+            getNews(mainViewModel.type,mainViewModel.cats,mainViewModel.searchText)
         }
     }
 
@@ -158,15 +155,15 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 categoryAdapter.selectedPosition = RecyclerView.NO_POSITION
                 categoryAdapter.notifyDataSetChanged()
-                searchText = query!!
+                mainViewModel.searchText = query!!
                 hideKeyboard(searchView)
-                type = "search"
-                getNews(type,cats,searchText)
+                mainViewModel.type = "search"
+                getNews(mainViewModel.type,mainViewModel.cats,mainViewModel.searchText)
                 newsAdapter.notifyDataSetChanged()
                 if(mainBinding.filterLayout.visibility != View.VISIBLE){
                     mainBinding.txtTool.visibility = View.VISIBLE
-                    toolVisibility = true
-                }else toolVisibility = false
+                    mainViewModel.toolVisibility = true
+                }else mainViewModel.toolVisibility = false
                 return true
             }
 
@@ -183,6 +180,8 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
         mainBinding.btnRetry.visibility = View.GONE
         mainBinding.txtErrorMassage.visibility = View.GONE
         mainBinding.rcViewArt.visibility=View.GONE
+        shortBy = mainViewModel.shortBy
+        shortByCountry = mainViewModel.shortByCountry
 
         if(isInternetAvailable(this)){
             when(type){
@@ -229,29 +228,30 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        if (type != "top"){
+        if (mainViewModel.type != "top"){
             categoryAdapter.selectedPosition = RecyclerView.NO_POSITION
             categoryAdapter.notifyDataSetChanged()
             mainBinding.txtTool.visibility = View.GONE
-            type = "top"
-            toolVisibility = false
-            getNews(type,cats,searchText)
+            mainViewModel.type = "top"
+            mainViewModel.toolVisibility = false
+            getNews(mainViewModel.type,mainViewModel.cats,mainViewModel.searchText)
         }else{
             super.onBackPressed()
         }
     }
 
     // THIS OVERRIDE METHODE USE TO SEARCH CATEGORY BY NEWS
-    override fun selectCategoy(text:String) {
-       if(cats != text){
-           cats = text
-           type = "category"
-           getNews(type,cats,searchText)
+    override fun selectCategoy(text:String,position: Int) {
+       mainViewModel._selectedPosition = position
+       if(mainViewModel.cats != text){
+           mainViewModel.cats = text
+           mainViewModel.type = "category"
+           getNews(mainViewModel.type,mainViewModel.cats,mainViewModel.searchText)
        }
         if(mainBinding.filterLayout.visibility != View.VISIBLE){
             mainBinding.txtTool.visibility = View.VISIBLE
-            toolVisibility = true
-        }else toolVisibility = false
+            mainViewModel.toolVisibility = true
+        }else mainViewModel.toolVisibility = false
 
     }
 
@@ -272,13 +272,13 @@ class MainActivity : AppCompatActivity() ,SelectCategory,ReadMore{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
               if(short==1){
                   if(list[position]=="recently"){
-                      shortBy  = "publishedAt"
+                      mainViewModel.shortBy  = "publishedAt"
                   }else{
-                      shortBy  = list[position]
+                      mainViewModel.shortBy  = list[position]
                   }
 
               }else{
-                  shortByCountry  = list[position]
+                  mainViewModel.shortByCountry  = list[position]
               }
             }
 
