@@ -13,7 +13,6 @@ Android News Reader App
     * When the user searches for news articles, the app should retrieve the search results from the News API and display them in the news list component. 
     * When the user selects an article, the app should show a detailed view of the article in the news detail component. 
     * Implement pull-to-refresh for the news list component to allow the user to refresh the list of articles. 
-    * Implement pagination for the news list component to allow the user to browse through multiple pages of articles. 
 - Implement error handling and display appropriate error messages to the user if any errors occur. 
 - Use native Android UI components to create an attractive and functional user interface. 
 - Test the app on an Android emulator or a physical device.
