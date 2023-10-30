@@ -16,6 +16,8 @@ Android News Reader App
 - Implement error handling and display appropriate error messages to the user if any errors occur. 
 - Use native Android UI components to create an attractive and functional user interface. 
 - Test the app on an Android emulator or a physical device.
+# install apk and view video
+* here is a drive link https://drive.google.com/drive/folders/1ukwSg-plyXYxZusadXL7ZUw42kBnCD-w?usp=sharing
 
 ![Screenshot_20230219_181256](https://user-images.githubusercontent.com/64691445/219952333-0635ec80-fe91-4364-be97-aa53397c1e73.jpg)<br/><br/>
 ![Screenshot_20230219_181305](https://user-images.githubusercontent.com/64691445/219952337-a75df9dd-1058-43d3-a658-2d5c20fd8d16.jpg)<br/><br/>
